@@ -28,7 +28,6 @@ Before running the project, make sure you have the following installed:
 
 
 1. SignUp Screen
-![image](https://github.com/user-attachments/assets/df2212a3-126c-4b46-a797-7ce19b0e9d5f)
 <img width="1366" height="674" alt="image" src="https://github.com/user-attachments/assets/df2212a3-126c-4b46-a797-7ce19b0e9d5f" />
 2. PhoneVerification Screen
 <img width="1347" height="667" alt="image" src="https://github.com/user-attachments/assets/f3a0f4b0-e714-4f14-80af-e28d592d59b4" />
