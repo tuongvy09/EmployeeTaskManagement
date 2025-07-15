@@ -1,0 +1,22 @@
+.employee-table-wrapper {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+.filter-input {
+    width: 200px;
+}

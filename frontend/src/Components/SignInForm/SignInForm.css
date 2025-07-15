@@ -1,0 +1,60 @@
+.signin-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 16px;
+}
+
+.signin-card {
+    width: 100%;
+    max-width: 350px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.signin-back {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.signin-title {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+.signin-subtitle {
+    display: block;
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.signin-note {
+    display: block;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.signin-footer {
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .signin-title {
+        font-size: 20px;
+    }
+
+    .signin-subtitle,
+    .signin-note {
+        font-size: 12px;
+    }
+
+    .signin-card {
+        padding: 16px;
+    }
+}

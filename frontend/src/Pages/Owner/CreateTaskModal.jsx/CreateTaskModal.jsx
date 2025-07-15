@@ -1,0 +1,81 @@
+import { PlusOutlined } from "@ant-design/icons";
+import {
+    Button,
+    Col,
+    DatePicker,
+    Form,
+    Input,
+    Modal,
+    Row,
+    Select,
+} from "antd";
+
+const { Option } = Select;
+
+const CreateTaskModal = ({ visible, onCreate, onCancel }) => {
+    const [form] = Form.useForm();
+
+    const handleFinish = (values) => {
+        onCreate(values);
+        form.resetFields();
+    };
+
+    return (
+        <Modal
+            open={visible}
+            title="Tạo Task mới"
+            onCancel={() => {
+                form.resetFields();
+                onCancel();
+            }}
+            footer={null}
+        >
+            <Form layout="vertical" form={form} onFinish={handleFinish}>
+                <Row gutter={16}>
+                    <Col span={24}>
+                        <Form.Item
+                            name="title"
+                            label="Tiêu đề"
+                            rules={[{ required: true, message: "Vui lòng nhập tiêu đề!" }]}
+                        >
+                            <Input placeholder="Nhập tiêu đề task..." />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item name="assignee" label="Giao cho">
+                            <Select placeholder="Chọn người được giao (có thể bỏ trống)">
+                                <Option value="user1">User 1</Option>
+                                <Option value="user2">User 2</Option>
+                                <Option value="user3">User 3</Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            name="dueDate"
+                            label="Ngày hết hạn"
+                            rules={[{ required: true, message: "Chọn ngày!" }]}
+                        >
+                            <DatePicker style={{ width: "100%" }} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item name="description" label="Mô tả">
+                            <Input.TextArea rows={2} placeholder="Nhập mô tả..." />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <div style={{ textAlign: "right" }}>
+                    <Button onClick={onCancel} style={{ marginRight: 8 }}>
+                        Hủy
+                    </Button>
+                    <Button type="primary" htmlType="submit" icon={<PlusOutlined />}>
+                        Tạo Task
+                    </Button>
+                </div>
+            </Form>
+        </Modal>
+    );
+};
+
+export default CreateTaskModal;

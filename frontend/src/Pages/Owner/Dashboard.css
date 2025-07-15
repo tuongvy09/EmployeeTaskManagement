@@ -1,0 +1,32 @@
+.site-sider {
+    background-color: #fff;
+    border-right: 1px solid #e5e7eb;
+}
+
+.dashboard-layout .menu {
+    margin-top: 80px;
+}
+
+
+.dashboard-layout .menu .ant-menu-item {
+    text-align: left;
+    padding-left: 24px !important;
+}
+
+
+.dashboard-layout .menu .ant-menu-item-selected {
+    background-color: #e6f4ff;
+    color: #1677ff;
+    font-weight: 600;
+}
+
+.site-content {
+    background-color: #f9f9f9;
+    min-height: 100vh;
+}
+
+.page-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}

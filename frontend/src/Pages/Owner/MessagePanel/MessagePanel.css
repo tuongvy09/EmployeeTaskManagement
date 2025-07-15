@@ -1,0 +1,251 @@
+.chat-container {
+    display: flex;
+    height: 80%;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.chat-sidebar {
+    width: 260px;
+    background-color: #f5f5f5;
+    padding: 16px;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+.chat-header {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.chat-user {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chat-user:hover,
+.chat-user.active {
+    background-color: #e0ebff;
+}
+
+.chat-avatar {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.chat-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-username {
+    font-weight: 600;
+}
+
+.chat-last-message {
+    font-size: 13px;
+    color: gray;
+}
+
+/* Main chat */
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-message {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.from-other {
+    background-color: #e0e0e0;
+    align-self: flex-start;
+}
+
+.from-me {
+    background-color: #4a90e2;
+    color: white;
+    align-self: flex-end;
+}
+
+/* Input section */
+.chat-input-container {
+    display: flex;
+    padding: 16px;
+    background-color: #eeeeee;
+    gap: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.chat-send-button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.chat-send-button:hover {
+    background-color: #357ac8;
+}
+
+.employee-list-container {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 8px;
+    padding-right: 4px;
+
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+}
+
+.employee-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.employee-list-container::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+.employee-card {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #fafafa;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.employee-card:hover {
+    background-color: #f0f8ff;
+    transform: scale(1.01);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.employee-avatar {
+    width: 36px;
+    height: 36px;
+    background-color: #d0eaff;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: bold;
+    color: #007acc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.employee-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.employee-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.employee-email {
+    font-size: 13px;
+    color: #777;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.employee-search {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Typing  */
+.typing-indicator {
+    font-style: italic;
+    color: #555;
+    background-color: #eee;
+    padding: 6px 12px;
+    border-radius: 18px;
+    max-width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.typing-indicator .dot {
+    animation: blink 1.4s infinite;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.typing-indicator .dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator .dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.typing-indicator .dot:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0.2;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.2;
+    }
+}
