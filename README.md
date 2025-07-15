@@ -69,6 +69,6 @@ npm start
 
 
 6. User Info Screen
-
+![User Info](https://github.com/user-attachments/assets/c48aaf1d-2e91-4a08-89e7-4677098e69d5)
 
 
