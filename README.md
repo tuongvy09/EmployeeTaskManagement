@@ -26,25 +26,6 @@ Before running the project, make sure you have the following installed:
 - **npm** (comes with Node.js)
 - **Git** — [Download here](https://git-scm.com/)
 
----
-
-## 🚀 Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/tuongvy09/EmployeeTaskManagement.git
-cd EmployeeTaskManagement
-
-### install and run backend
-cd backend
-npm install
-node app.js
-
-### install and run frontend
-cd frontend
-npm install
-npm start
 
 1. SignUp Screen
 ![image](https://github.com/user-attachments/assets/df2212a3-126c-4b46-a797-7ce19b0e9d5f)
@@ -64,3 +45,23 @@ npm start
 6. User Info
 <img width="1364" height="664" alt="image" src="https://github.com/user-attachments/assets/c48aaf1d-2e91-4a08-89e7-4677098e69d5" />
 
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/tuongvy09/EmployeeTaskManagement.git
+cd EmployeeTaskManagement
+
+### install and run backend
+cd backend
+npm install
+node app.js
+
+### install and run frontend
+cd frontend
+npm install
+npm start
