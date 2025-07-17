@@ -5,14 +5,17 @@ import {
     message,
     Row,
     Select,
+    Spin,
     Tabs,
     Tag,
 } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { assignTask, completeTask, createTask, getEmployees, getTasks, getTasksAssignedToEmployee } from "../../../Contexts/api";
 import CreateTaskModal from "../CreateTaskModal.jsx/CreateTaskModal";
+import "./TaskManager.css";
 
 const TaskManager = ({ role }) => {
     const currentUser = useSelector((state) => state.auth.user);
@@ -23,8 +26,10 @@ const TaskManager = ({ role }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [assignedUsers, setAssignedUsers] = useState({});
     const [employeeList, setEmployeeList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const handleCreateTask = async (values) => {
+        setLoading(true);
         try {
             const taskData = {
                 title: values.title,
@@ -37,14 +42,17 @@ const TaskManager = ({ role }) => {
             const newTask = res.data;
 
             setTasks((prev) => [...prev, newTask]);
-            message.success("Đã tạo task thành công!");
+            toast.success("Đã tạo task thành công!");
             setIsModalOpen(false);
         } catch (error) {
-            message.error("Tạo task thất bại!");
+            toast.error("Tạo task thất bại!");
+        } finally {
+            setLoading(false);
         }
     };
 
     const fetchTasks = async () => {
+        setLoading(true);
         try {
             let res;
             if (role === "owner") {
@@ -66,6 +74,8 @@ const TaskManager = ({ role }) => {
             setTasks(taskList);
         } catch (error) {
             message.error("Không thể tải danh sách task");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -77,16 +87,19 @@ const TaskManager = ({ role }) => {
         const employeeId = assignedUsers[taskId];
 
         if (!employeeId) {
-            return message.warning("Vui lòng chọn người để giao task.");
+            return toast.warning("Vui lòng chọn người để giao task.");
         }
 
+        setLoading(true);
         try {
             await assignTask(taskId, employeeId);
-            message.success("Giao task thành công");
+            toast.success("Giao task thành công");
             fetchTasks();
         } catch (error) {
             console.error("Lỗi khi giao task:", error);
-            message.error("Không thể giao task.");
+            toast.error("Không thể giao task.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -152,6 +165,8 @@ const TaskManager = ({ role }) => {
                     visible={isModalOpen}
                     onCreate={handleCreateTask}
                     onCancel={() => setIsModalOpen(false)}
+                    loading={loading}
+                    employeeList={employeeList}
                 />
             )}
 
@@ -166,70 +181,73 @@ const TaskManager = ({ role }) => {
                 <Tabs.TabPane tab="Hoàn thành" key="done" />
             </Tabs>
 
-            <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-                {filteredTasks.length === 0 ? (
-                    <Col span={24}>
-                        <Card>
-                            <p style={{ textAlign: "center" }}>
-                                Không có task nào ở mục này.
-                            </p>
-                        </Card>
-                    </Col>
-                ) : (
-                    filteredTasks.map((task) => (
-                        <Col span={8} key={task.id}>
-                            <Card
-                                title={task.title}
-                                extra={renderStatusTag(task.status)}
-                                actions={[
-                                    role === "employee" && task.status === "doing" && (
-                                        <Button
-                                            type="link"
-                                            onClick={() => handleCompleteTask(task.id)}
-                                        >
-                                            Hoàn thành
-                                        </Button>
-                                    ),
-                                    role === "owner" && task.status === "unassigned" && (
-                                        <div style={{ padding: "0 16px", width: "100%" }}>
-                                            <Select
-                                                placeholder="Chọn người giao task"
-                                                style={{ width: "100%", marginBottom: 8 }}
-                                                value={assignedUsers[task.id]}
-                                                onChange={(val) =>
-                                                    setAssignedUsers({ ...assignedUsers, [task.id]: val })
-                                                }
-                                            >
-                                                {employeeList.map((emp) => (
-                                                    <Select.Option key={emp.id} value={emp.id}>
-                                                        {emp.name}
-                                                    </Select.Option>
-                                                ))}
-                                            </Select>
-                                            <Button
-                                                block
-                                                type="primary"
-                                                disabled={!assignedUsers[task.id]}
-                                                onClick={() => handleAssignTask(task.id)}
-                                            >
-                                                Giao task
-                                            </Button>
-                                        </div>
-                                    ),
-                                ].filter(Boolean)}
-                            >
-                                <p>
-                                    <b>Giao cho:</b> {task.assignee || "Chưa giao"}
+            <Spin spinning={loading}>
+                <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+                    {!loading && filteredTasks.length === 0 ? (
+                        <Col span={24}>
+                            <Card>
+                                <p style={{ textAlign: "center" }}>
+                                    Không có task nào ở mục này.
                                 </p>
-                                <p>
-                                    <b>Hạn:</b> {dayjs(task.dueDate).format("DD/MM/YYYY")}
-                                </p>
-                                <p>{task.description}</p>
                             </Card>
                         </Col>
-                    ))
-                )}
-            </Row>
+                    ) : (
+                        filteredTasks.map((task) => (
+                            <Col xs={24} sm={24} md={12} lg={8} key={task.id}>
+                                <Card
+                                    title={task.title}
+                                    extra={renderStatusTag(task.status)}
+                                    actions={[
+                                        role === "employee" && task.status === "doing" && (
+                                            <Button
+                                                type="link"
+                                                onClick={() => handleCompleteTask(task.id)}
+                                            >
+                                                Hoàn thành
+                                            </Button>
+                                        ),
+                                        role === "owner" && task.status === "unassigned" && (
+                                            <div style={{ padding: "0 16px", width: "100%" }}>
+                                                <Select
+                                                    placeholder="Chọn người giao task"
+                                                    style={{ width: "100%", marginBottom: 8 }}
+                                                    value={assignedUsers[task.id]}
+                                                    onChange={(val) =>
+                                                        setAssignedUsers({ ...assignedUsers, [task.id]: val })
+                                                    }
+                                                >
+                                                    {employeeList.map((emp) => (
+                                                        <Select.Option key={emp.id} value={emp.id}>
+                                                            {emp.name}
+                                                        </Select.Option>
+                                                    ))}
+                                                </Select>
+                                                <Button
+                                                    block
+                                                    type="primary"
+                                                    disabled={!assignedUsers[task.id]}
+                                                    onClick={() => handleAssignTask(task.id)}
+                                                    loading={loading}
+                                                >
+                                                    Giao task
+                                                </Button>
+                                            </div>
+                                        ),
+                                    ].filter(Boolean)}
+                                >
+                                    <p>
+                                        <b>Giao cho:</b> {task.assigneeName || "Chưa giao"}
+                                    </p>
+                                    <p>
+                                        <b>Hạn:</b> {dayjs(task.dueDate).format("DD/MM/YYYY")}
+                                    </p>
+                                    <p>{task.description}</p>
+                                </Card>
+                            </Col>
+                        ))
+                    )}
+                </Row>
+            </Spin>
         </div>
     );
 };

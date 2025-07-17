@@ -7,6 +7,7 @@ import PhoneVerification from './Pages/SignIn/PhoneVerification';
 import SignIn from './Pages/SignIn/SignIn';
 import ProtectedRoute from './ProtectedRoute';
 import './Styles/theme.css';
+import enums from './constant/enum';
 
 function App() {
   return (
@@ -18,12 +19,12 @@ function App() {
 
         <Route
           path="/dashboard"
-          element={<ProtectedRoute element={Dashboard} allowedRoles={["admin"]} />}
+          element={<ProtectedRoute element={Dashboard} allowedRoles={[enums.ROLES.OWNER]} />}
         />
 
         <Route
           path="/home"
-          element={<ProtectedRoute element={Home} allowedRoles={["employee"]} />}
+          element={<ProtectedRoute element={Home} allowedRoles={[enums.ROLES.EMPLOYEE]} />}
         />
       </Routes>
 

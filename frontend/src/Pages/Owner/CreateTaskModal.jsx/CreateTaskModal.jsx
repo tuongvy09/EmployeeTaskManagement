@@ -12,7 +12,7 @@ import {
 
 const { Option } = Select;
 
-const CreateTaskModal = ({ visible, onCreate, onCancel }) => {
+const CreateTaskModal = ({ visible, onCreate, onCancel, loading, employeeList }) => {
     const [form] = Form.useForm();
 
     const handleFinish = (values) => {
@@ -44,9 +44,11 @@ const CreateTaskModal = ({ visible, onCreate, onCancel }) => {
                     <Col span={12}>
                         <Form.Item name="assignee" label="Giao cho">
                             <Select placeholder="Chọn người được giao (có thể bỏ trống)">
-                                <Option value="user1">User 1</Option>
-                                <Option value="user2">User 2</Option>
-                                <Option value="user3">User 3</Option>
+                                {employeeList.map((employee) => (
+                                    <Option key={employee.id} value={employee.id}>
+                                        {employee.name}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -69,7 +71,7 @@ const CreateTaskModal = ({ visible, onCreate, onCancel }) => {
                     <Button onClick={onCancel} style={{ marginRight: 8 }}>
                         Hủy
                     </Button>
-                    <Button type="primary" htmlType="submit" icon={<PlusOutlined />}>
+                    <Button type="primary" htmlType="submit" icon={<PlusOutlined />} loading={loading}>
                         Tạo Task
                     </Button>
                 </div>

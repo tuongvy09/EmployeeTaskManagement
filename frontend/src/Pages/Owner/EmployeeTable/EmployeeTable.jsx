@@ -1,6 +1,6 @@
-// components/EmployeeTable.jsx
 import { Button, Input, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
 import ConfirmDeleteModal from '../../../Components/ConfirmDeleteModal/ConfirmDeleteModal';
 import { deleteEmployee, getEmployees, updateEmployee } from '../../../Contexts/api';
 import CreateEmployeeModal from '../CreateEmployeeModal/CreateEmployeeModal';
@@ -18,6 +18,7 @@ export default function EmployeeTable() {
     const [status, setStatus] = useState('');
     const [searchText, setSearchText] = useState('');
     const [debouncedText, setDebouncedText] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -35,13 +36,16 @@ export default function EmployeeTable() {
 
     const handleOk = async () => {
         if (!selectedEmployee) return;
-
+        setLoading(true);
         try {
             await updateEmployee(selectedEmployee.id, status);
             setIsOpenModalEdit(false);
+            toast.success('Employee status updated successfully!');
             fetchEmployees();
         } catch (error) {
-            console.error('Failed to update employee', error);
+            toast.error('Failed to update employee status.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -53,6 +57,7 @@ export default function EmployeeTable() {
     const handleCloseModal = () => setModalOpen(false);
 
     const fetchEmployees = async () => {
+        setLoading(true);
         try {
             const response = await getEmployees(debouncedText);
             const employees = response.data.employees;
@@ -60,6 +65,8 @@ export default function EmployeeTable() {
             setEmployeeCount(employees.length);
         } catch (error) {
             console.error("Failed to fetch employees:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -127,6 +134,7 @@ export default function EmployeeTable() {
 
     return (
         <div className="employee-table-wrapper">
+            <ToastContainer position="top-right" autoClose={3000} />
             <div className="table-header">
                 <h2>{employeeCount} Employee{employeeCount !== 1 ? 's' : ''}</h2>
                 <div className="actions">
@@ -139,7 +147,7 @@ export default function EmployeeTable() {
                     />
                 </div>
             </div>
-            <Table columns={columns} dataSource={employeeList} rowKey="id" pagination={false} />
+            <Table columns={columns} dataSource={employeeList} rowKey="id" pagination={false} loading={loading} />
             <CreateEmployeeModal
                 visible={modalOpen}
                 onClose={handleCloseModal}
@@ -152,6 +160,7 @@ export default function EmployeeTable() {
                 status={status}
                 setStatus={setStatus}
                 employee={selectedEmployee}
+                loading={loading}
             />
             <ConfirmDeleteModal
                 visible={isDeleteModalOpen}

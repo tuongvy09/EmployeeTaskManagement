@@ -1,4 +1,6 @@
-import { Button, Col, Form, Input, Modal, Row, Select, message } from 'antd';
+import { Button, Col, Form, Input, Modal, Row, Select } from 'antd';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { createEmployee } from '../../../Contexts/api';
 import './CreateEmployeeModal.css';
 
@@ -7,7 +9,10 @@ const { Option } = Select;
 const CreateEmployeeModal = ({ visible, onClose, onCreate }) => {
     const [form] = Form.useForm();
 
+    const [loading, setLoading] = useState(false);
+
     const handleSubmit = async (formValues) => {
+        setLoading(true);
         try {
             const values = await form.validateFields();
             const payload = {
@@ -16,14 +21,17 @@ const CreateEmployeeModal = ({ visible, onClose, onCreate }) => {
             };
 
             await createEmployee(payload);
-            message.success('Employee created successfully!');
+            toast.success('Employee created successfully!');
             form.resetFields();
             onClose();
 
             if (onCreate) onCreate();
         } catch (error) {
             console.error(error);
-            message.error('Failed to create employee.');
+            const message = error?.response?.data?.message || 'Failed to create employee.';
+            toast.error(message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -98,7 +106,7 @@ const CreateEmployeeModal = ({ visible, onClose, onCreate }) => {
                 </Row>
 
                 <div className="btn-wrapper">
-                    <Button type="primary" onClick={handleSubmit}>Create</Button>
+                    <Button type="primary" onClick={handleSubmit} loading={loading}>Create</Button>
                 </div>
             </Form>
         </Modal>
