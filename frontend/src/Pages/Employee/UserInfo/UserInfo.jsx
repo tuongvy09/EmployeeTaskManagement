@@ -66,7 +66,6 @@ const UserInfo = () => {
                 <Descriptions.Item label="Số điện thoại">{info.phoneNumber}</Descriptions.Item>
                 <Descriptions.Item label="Vai trò">{info.role}</Descriptions.Item>
                 <Descriptions.Item label="Trạng thái">{info.status}</Descriptions.Item>
-                <Descriptions.Item label="Xác minh">{info.verified ? "✔️ Đã xác minh" : "❌ Chưa xác minh"}</Descriptions.Item>
                 <Descriptions.Item label="Ngày tạo">
                     {new Date(info.createdAt).toLocaleString("vi-VN")}
                 </Descriptions.Item>

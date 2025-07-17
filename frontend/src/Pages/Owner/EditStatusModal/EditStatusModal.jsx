@@ -3,7 +3,7 @@ import { Modal, Select } from 'antd';
 
 const { Option } = Select;
 
-const EditStatusModal = ({ visible, onOk, onCancel, status, setStatus, employee }) => {
+const EditStatusModal = ({ visible, onOk, onCancel, status, setStatus, employee, loading }) => {
     return (
         <Modal
             title="Edit Employee Status"
@@ -11,6 +11,7 @@ const EditStatusModal = ({ visible, onOk, onCancel, status, setStatus, employee 
             onOk={onOk}
             onCancel={onCancel}
             okText="Update"
+            confirmLoading={loading}
         >
             <p><strong>Employee:</strong> {employee?.name}</p>
             <Select
@@ -20,7 +21,6 @@ const EditStatusModal = ({ visible, onOk, onCancel, status, setStatus, employee 
             >
                 <Option value="Active">Active</Option>
                 <Option value="InActive">InActive</Option>
-                <Option value="Pending">Pending</Option>
             </Select>
         </Modal>
     );

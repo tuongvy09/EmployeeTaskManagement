@@ -53,7 +53,6 @@ const getConversationDetail = async (req, res) => {
         const { conversationId } = req.params;
 
         const msgRef = collection(db, `messages/${conversationId}/items`);
-        console.log("Fetching messages for conversation:", msgRef);
         const q = query(msgRef, orderBy("timestamp"));
 
         const snapshot = await getDocs(q);

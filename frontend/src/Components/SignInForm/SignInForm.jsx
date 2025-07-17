@@ -11,9 +11,10 @@ const SignInForm = ({
     placeholder,
     buttonText,
     note,
+    loading,
     footerText,
     footerLinkText,
-    footerLinkHref,
+    handleFooterLinkClick,
     onSubmit,
 }) => {
     return (
@@ -48,7 +49,7 @@ const SignInForm = ({
 
                     {buttonText && (
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" block>
+                            <Button type="primary" htmlType="submit" block loading={loading}>
                                 {buttonText}
                             </Button>
                         </Form.Item>
@@ -64,7 +65,15 @@ const SignInForm = ({
                 {(footerText || footerLinkText) && (
                     <div className="signin-footer">
                         {footerText && <Text type="secondary">{footerText} </Text>}
-                        {footerLinkText && <Link href={footerLinkHref || '#'}>{footerLinkText}</Link>}
+                        {footerLinkText &&
+                            <Link
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleFooterLinkClick();
+                                }}
+                            >
+                                {footerLinkText}
+                            </Link>}
                     </div>
                 )}
             </Card>

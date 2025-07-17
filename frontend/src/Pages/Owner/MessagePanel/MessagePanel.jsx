@@ -225,7 +225,7 @@ const MessagePanel = ({ role }) => {
                             <div className="chat-avatar">{otherUser?.name?.charAt(0).toUpperCase() || "👤"}</div>
                             <div className="chat-user-info">
                                 <div className="chat-username">{conv.otherUser?.name || "Unknown User"}</div>
-                                <div className="chat-last-message">{conv.lastMessage?.message || "Chưa có tin nhắn"}</div>
+                                <div className="chat-last-message"></div>
 
                             </div>
                         </div>

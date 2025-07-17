@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SignInForm from '../../Components/SignInForm/SignInForm';
 import enums from '../../constant/enum';
-import { validateAccessCode } from '../../Contexts/api';
+import { requestAccessCode, validateAccessCode } from '../../Contexts/api';
 import { loginSuccess } from '../../redux/slice/auth';
 
 const PhoneVerification = () => {
@@ -10,16 +11,18 @@ const PhoneVerification = () => {
     const location = useLocation();
     const dispatch = useDispatch();
 
+    const [loading, setLoading] = useState(false);
 
     const phone = location.state?.phone;
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(phone);
 
     const handleSendCode = async (values) => {
+        setLoading(true);
         try {
             const res = await validateAccessCode(!isEmail ? phone : null,
                 isEmail ? phone : null, values.phone);
             const { accessToken, refreshToken, user } = res.data;
-            dispatch(loginSuccess({ 
+            dispatch(loginSuccess({
                 accessToken,
                 refreshToken,
                 user,
@@ -42,6 +45,20 @@ const PhoneVerification = () => {
 
         } catch (err) {
             console.error('Lỗi:', err.response?.data || err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleReSendCode = async (values) => {
+        setLoading(true);
+        try {
+            const res = await requestAccessCode(!isEmail ? phone : null,
+                isEmail ? phone : null, values.phone);
+        } catch (err) {
+            console.error('Lỗi:', err.response?.data || err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -55,7 +72,8 @@ const PhoneVerification = () => {
                 buttonText="Submit"
                 footerText="Code not received?"
                 footerLinkText="Resend"
-                footerLinkHref="#"
+                loading={loading}
+                handleFooterLinkClick={handleReSendCode}
                 onSubmit={handleSendCode}
             />
         </>

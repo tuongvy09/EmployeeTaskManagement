@@ -134,6 +134,20 @@ const createEmployee = async (req, res) => {
         }
 
         const collectionRef = collection(db, "employees");
+        const emailQuery = query(collectionRef, where("email", "==", email));
+        const emailSnapshot = await getDocs(emailQuery);
+
+        if (!emailSnapshot.empty) {
+            return res.status(400).json({ message: "Email already exists" });
+        }
+
+        const phoneQuery = query(collectionRef, where("phoneNumber", "==", phoneNumber));
+        const phoneSnapshot = await getDocs(phoneQuery);
+
+        if (!phoneSnapshot.empty) {
+            return res.status(400).json({ message: "Phone number already exists" });
+        }
+
         const newDocRef = doc(collectionRef);
         const employeeId = newDocRef.id;
 
@@ -149,7 +163,7 @@ const createEmployee = async (req, res) => {
             id: employeeId,
             verified: false,
             status: "Active",
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
         });
 
         await sendVerificationEmail(email, verificationLink);

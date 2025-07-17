@@ -41,7 +41,18 @@ export default function Dashboard() {
 
     return (
         <Layout style={{ minHeight: '100vh' }} className="dashboard-layout">
-            <Sider width={200} className="site-sider">
+            <Sider
+                width={200}
+                className="site-sider"
+                breakpoint="md"
+                collapsedWidth="0"
+                onBreakpoint={(broken) => {
+                    console.log('Breakpoint hit:', broken);
+                }}
+                onCollapse={(collapsed, type) => {
+                    console.log('Collapsed:', collapsed, 'Type:', type);
+                }}
+            >
                 <Menu
                     mode="inline"
                     selectedKeys={[selectedKey]}

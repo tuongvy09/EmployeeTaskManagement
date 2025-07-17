@@ -1,0 +1,14 @@
+.task-manager {
+    padding: 16px;
+}
+
+@media (max-width: 576px) {
+    .task-manager .ant-card {
+        font-size: 14px;
+    }
+
+    .task-manager .ant-btn {
+        font-size: 13px;
+        padding: 4px 8px;
+    }
+}

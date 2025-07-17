@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SignInForm from '../../Components/SignInForm/SignInForm';
 import { requestAccessCode } from '../../Contexts/api';
 
 const SignIn = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleSendCode = async (values) => {
+        setLoading(true);
         try {
             const res = await requestAccessCode(values.phone);
             navigate('/verify-code', {
@@ -15,6 +18,8 @@ const SignIn = () => {
             });
         } catch (err) {
             console.error('Lỗi:', err.response?.data || err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -26,10 +31,9 @@ const SignIn = () => {
                 placeholder="Your Phone Number or Email"
                 buttonText="Next"
                 note="passwordless authentication methods."
-                footerText="Don't having account?"
-                footerLinkText="Sign up"
                 footerLinkHref="#"
                 onSubmit={handleSendCode}
+                loading={loading}
             />
         </>
     );
