@@ -2,7 +2,7 @@ const express = require("express");
 const {
     getNotificationsByUser,
     countUnreadNotifications,
-    markNotificationAsRead,
+    markAllNotificationsAsRead,
 } = require("../controllers/Notification");
 
 const router = express.Router();
@@ -11,6 +11,6 @@ router.get("/:userId", getNotificationsByUser);
 
 router.get("/:userId/unread-count", countUnreadNotifications);
 
-router.put("/read/:notificationId", markNotificationAsRead);
+router.put("/read/:userId", markAllNotificationsAsRead);
 
 module.exports = router;

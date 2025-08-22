@@ -9,10 +9,11 @@ import {
     Row,
     Select,
 } from "antd";
+import dayjs from "dayjs";
 
 const { Option } = Select;
 
-const CreateTaskModal = ({ visible, onCreate, onCancel, loading, employeeList, handleDataChange }) => {
+const CreateTaskModal = ({ visible, onCreate, onCancel, loading, employeeList }) => {
     const [form] = Form.useForm();
 
     const handleFinish = (values) => {
@@ -58,7 +59,11 @@ const CreateTaskModal = ({ visible, onCreate, onCancel, loading, employeeList, h
                             label="Ngày hết hạn"
                             rules={[{ required: true, message: "Chọn ngày!" }]}
                         >
-                            <DatePicker style={{ width: "100%" }} />
+                            <DatePicker
+                                style={{ width: "100%" }}
+                                disabledDate={(current) => {
+                                    return current && current < dayjs().startOf("day");
+                                }} />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -74,7 +79,6 @@ const CreateTaskModal = ({ visible, onCreate, onCancel, loading, employeeList, h
                     <Button type="primary" htmlType="submit" icon={<PlusOutlined />} loading={loading}>
                         Tạo Task
                     </Button>
-                    <Button onClick={() => handleDataChange("description")}>Ghi chú</Button>
                 </div>
             </Form>
         </Modal>

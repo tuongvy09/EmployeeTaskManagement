@@ -1,5 +1,5 @@
 const { db } = require("../config/firebase");
-const { collection, query, where, orderBy, getDocs, doc, updateDoc, getDoc } = require("firebase/firestore");
+const { collection, query, where, orderBy, getDocs, doc, updateDoc, getDoc, writeBatch } = require("firebase/firestore");
 
 const getNotificationsByUser = async (req, res) => {
     try {
@@ -50,25 +50,40 @@ const countUnreadNotifications = async (req, res) => {
     }
 };
 
-const markNotificationAsRead = async (req, res) => {
+const markAllNotificationsAsRead = async (req, res) => {
     try {
-        const { notificationId } = req.params;
+        const { userId } = req.params;
 
-        const notifRef = doc(db, "notifications", notificationId);
-        const notifSnap = await getDoc(notifRef);
-
-        if (!notifSnap.exists()) {
-            return res.status(404).json({ success: false, message: "Notification not found" });
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "Missing userId" });
         }
 
-        await updateDoc(notifRef, { isRead: true });
+        const q = query(
+            collection(db, "notifications"),
+            where("receiverId", "==", userId),
+            where("isRead", "==", false)
+        );
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            return res.status(200).json({
+                success: true,
+                message: "No unread notifications found",
+            });
+        }
+
+        const batch = writeBatch(db);
+        snapshot.forEach((docSnap) => {
+            batch.update(docSnap.ref, { isRead: true });
+        });
+        await batch.commit();
 
         res.status(200).json({
             success: true,
-            message: "Notification marked as read",
+            message: `Marked ${snapshot.size} notifications as read`,
         });
     } catch (error) {
-        console.error("Error markNotificationAsRead:", error);
+        console.error("Error markAllNotificationsAsRead:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -76,5 +91,5 @@ const markNotificationAsRead = async (req, res) => {
 module.exports = {
     getNotificationsByUser,
     countUnreadNotifications,
-    markNotificationAsRead,
+    markAllNotificationsAsRead,
 };

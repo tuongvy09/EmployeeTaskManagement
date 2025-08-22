@@ -1,7 +1,6 @@
 import { differenceInMinutes, isBefore } from "date-fns";
 import cron from "node-cron";
 import { getDatabase } from "../config/firebase.js";
-import { io } from "../config/socket.js";
 
 const db = getDatabase();
 
@@ -30,8 +29,11 @@ cron.schedule("0 * * * *", async () => {
 
             await db.ref("notifications").push(notif);
 
-            io.to(task.assignee).emit("receiveNotification", notif);
+            const receiverSocket = onlineUsers.get(task.assignee);
 
+            if (receiverSocket) {
+                getIO().to(receiverSocket).emit("receiveNotification", notif);
+            }
         } else {
             const diffMinutes = differenceInMinutes(deadline, now);
 
@@ -48,7 +50,11 @@ cron.schedule("0 * * * *", async () => {
 
                 await db.ref("notifications").push(notif);
 
-                io.to(task.assignee).emit("receiveNotification", notif);
+                const receiverSocket = onlineUsers.get(task.assignee);
+
+                if (receiverSocket) {
+                    getIO().to(receiverSocket).emit("receiveNotification", notif);
+                }
             }
         }
     }

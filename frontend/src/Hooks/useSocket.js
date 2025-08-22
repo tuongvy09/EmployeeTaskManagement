@@ -35,6 +35,26 @@ const useSocket = (userId) => {
     return socket;
 };
 
+export const connectSocket = (userId) => {
+    if (!socketInstance) {
+        socketInstance = io(SOCKET_SERVER_URL, {
+            transports: ["websocket"],
+            reconnectionAttempts: 5,
+            auth: { userId },
+        });
+
+        socketInstance.on("connect", () => {
+            socketInstance.emit("join", userId);
+            console.log("✅ Socket connected:", socketInstance.id);
+        });
+
+        socketInstance.on("disconnect", (reason) => {
+            console.log("❌ Socket disconnected:", reason);
+        });
+    }
+    return socketInstance;
+};
+
 export const disconnectSocket = () => {
     if (socketInstance) {
         socketInstance.disconnect();

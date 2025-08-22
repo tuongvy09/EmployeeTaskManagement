@@ -143,3 +143,7 @@ export const getNotificationsByUser = (userId) => {
 export const getUnreadNotificationsCount = (userId) => {
     return api.get(`/notifications/${userId}/unread-count`);
 };
+
+export const markAllNotificationsAsReadApi = (userId) => {
+    return api.put(`/notifications/read/${userId}`);
+};
