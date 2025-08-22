@@ -12,7 +12,7 @@ import {
 
 const { Option } = Select;
 
-const CreateTaskModal = ({ visible, onCreate, onCancel, loading, employeeList }) => {
+const CreateTaskModal = ({ visible, onCreate, onCancel, loading, employeeList, handleDataChange }) => {
     const [form] = Form.useForm();
 
     const handleFinish = (values) => {
@@ -74,6 +74,7 @@ const CreateTaskModal = ({ visible, onCreate, onCancel, loading, employeeList })
                     <Button type="primary" htmlType="submit" icon={<PlusOutlined />} loading={loading}>
                         Tạo Task
                     </Button>
+                    <Button onClick={() => handleDataChange("description")}>Ghi chú</Button>
                 </div>
             </Form>
         </Modal>

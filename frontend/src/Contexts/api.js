@@ -135,3 +135,11 @@ export const getEmployeeInfo = (userId) => {
 export const updateEmployeeInfo = (userId, address) => {
     return api.put(`/employee/update/${userId}`, { address });
 };
+
+export const getNotificationsByUser = (userId) => {
+    return api.get(`/notifications/${userId}`);
+};
+
+export const getUnreadNotificationsCount = (userId) => {
+    return api.get(`/notifications/${userId}/unread-count`);
+};

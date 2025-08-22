@@ -3,34 +3,43 @@ import { io } from "socket.io-client";
 
 const SOCKET_SERVER_URL = process.env.REACT_APP_BASE_URL_API || "http://localhost:8000";
 
+let socketInstance = null;
+
 const useSocket = (userId) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
         if (!userId) return;
 
-        const newSocket = io(SOCKET_SERVER_URL, {
-            transports: ["websocket"],
-            reconnectionAttempts: 5,
-            auth: { userId },
-        });
+        if (!socketInstance) {
+            socketInstance = io(SOCKET_SERVER_URL, {
+                transports: ["websocket"],
+                reconnectionAttempts: 5,
+                auth: { userId },
+            });
 
-        newSocket.on("connect", () => {
-            newSocket.emit("join", userId);
-        });
+            socketInstance.on("connect", () => {
+                socketInstance.emit("join", userId);
+                console.log("Socket connected:", socketInstance.id);
+            });
 
-        newSocket.on("disconnect", (reason) => {
-            console.log("Socket disconnected:", reason);
-        });
+            socketInstance.on("disconnect", (reason) => {
+                console.log("Socket disconnected:", reason);
+            });
+        }
 
-        setSocket(newSocket);
-
-        return () => {
-            newSocket.disconnect();
-        };
+        setSocket(socketInstance);
+        return () => { };
     }, [userId]);
 
     return socket;
+};
+
+export const disconnectSocket = () => {
+    if (socketInstance) {
+        socketInstance.disconnect();
+        socketInstance = null;
+    }
 };
 
 export default useSocket;

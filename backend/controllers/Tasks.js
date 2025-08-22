@@ -1,6 +1,7 @@
 require("dotenv").config();
-const { doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, deleteDoc, addDoc } = require("firebase/firestore");
+const { doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, deleteDoc, addDoc, serverTimestamp } = require("firebase/firestore");
 const { db } = require("../config/firebase.js");
+const { io } = require("../config/socket.js");
 
 const createTask = async (req, res) => {
     const { title, description, dueDate, assignee } = req.body;
@@ -15,11 +16,29 @@ const createTask = async (req, res) => {
             description: description || "",
             dueDate,
             assignee: assignee || null,
+            assigneeName: assignee ? (await getDoc(doc(db, "employees", assignee))).data().name : null,
             status: assignee ? "doing" : "unassigned",
+            reminderSent: false,
             createdAt: new Date().toISOString(),
         };
 
         const docRef = await addDoc(collection(db, "tasks"), newTask);
+
+        if (assignee) {
+            const newNotif = {
+                type: "task_assigned",
+                senderId: "system",
+                receiverId: assignee,
+                taskId: docRef.id,
+                taskTitle: title,
+                timestamp: serverTimestamp(),
+                isRead: false,
+            };
+
+            await addDoc(collection(db, "notifications"), newNotif);
+
+            io.to(assignee).emit("receiveNotification", newNotif);
+        }
 
         return res.status(201).json({ id: docRef.id, ...newTask });
     } catch (error) {
@@ -40,6 +59,8 @@ const assignTask = async (req, res) => {
             return res.status(404).json({ message: "Không tìm thấy task" });
         }
 
+        const taskData = taskSnap.data();
+
         const empRef = doc(db, "employees", assignee);
         const empSnap = await getDoc(empRef);
 
@@ -54,6 +75,20 @@ const assignTask = async (req, res) => {
             assigneeName: empName,
             status: "doing",
         });
+
+        const newNotif = {
+            type: "task_assigned",
+            senderId: "system",
+            receiverId: assignee,
+            taskId: id,
+            taskTitle: taskData.title,
+            timestamp: serverTimestamp(),
+            isRead: false,
+        };
+
+        await addDoc(collection(db, "notifications"), newNotif);
+
+        io.to(assignee).emit("receiveNotification", newNotif);
 
         return res.status(200).json({ message: "Giao task thành công" });
     } catch (error) {
