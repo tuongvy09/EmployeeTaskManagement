@@ -60,7 +60,7 @@ export default function HeaderBar() {
     return (
         <Header className="site-header">
             <div className="header-right">
-                <NotificationModal count={count} />
+                <NotificationModal count={count} setCount={setCount} />
                 <Dropdown overlay={menu} placement="bottomRight" trigger={['click']}>
                     <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
                 </Dropdown>

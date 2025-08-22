@@ -3,15 +3,16 @@ import { Badge, Card, Dropdown, List, Tag, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getNotificationsByUser } from "../../Contexts/api";
+import { getNotificationsByUser, markAllNotificationsAsReadApi } from "../../Contexts/api";
 import useSocket from "../../Hooks/useSocket";
 
 const { Text } = Typography;
 
-const NotificationDropdown = ({ count }) => {
+const NotificationDropdown = ({ count, setCount }) => {
     const user = useSelector((state) => state.auth.user);
     const userId = user?.id;
     const socket = useSocket(userId);
+    const reset = () => setCount(0);
 
     const [open, setOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
@@ -144,6 +145,15 @@ const NotificationDropdown = ({ count }) => {
         </Card>
     );
 
+    const markAllNotificationsAsRead = async () => {
+        try {
+            await markAllNotificationsAsReadApi(userId);
+            reset();
+        } catch (error) {
+            console.error("Error marking all notifications as read:", error);
+        }
+    };
+
     return (
         <Dropdown
             dropdownRender={() => menuContent}
@@ -160,6 +170,7 @@ const NotificationDropdown = ({ count }) => {
                         marginRight: "8px",
                         cursor: "pointer",
                     }}
+                    onClick={() => markAllNotificationsAsRead(userId)}
                 />
             </Badge>
         </Dropdown>

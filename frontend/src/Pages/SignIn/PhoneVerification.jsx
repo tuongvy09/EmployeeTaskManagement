@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import SignInForm from '../../Components/SignInForm/SignInForm';
 import enums from '../../constant/enum';
 import { requestAccessCode, validateAccessCode } from '../../Contexts/api';
+import { connectSocket } from '../../Hooks/useSocket';
 import { loginSuccess } from '../../redux/slice/auth';
 
 const PhoneVerification = () => {
@@ -34,6 +35,9 @@ const PhoneVerification = () => {
                 user,
                 role: user.role,
             }));
+
+            connectSocket(user.id);
+
 
             if (user.role === enums.ROLES.OWNER) {
                 navigate("/dashboard");

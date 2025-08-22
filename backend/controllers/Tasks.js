@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, deleteDoc, addDoc, serverTimestamp } = require("firebase/firestore");
 const { db } = require("../config/firebase.js");
-const { io } = require("../config/socket.js");
+const { onlineUsers, getIO } = require("../config/socket.js");
 
 const createTask = async (req, res) => {
     const { title, description, dueDate, assignee } = req.body;
@@ -37,7 +37,11 @@ const createTask = async (req, res) => {
 
             await addDoc(collection(db, "notifications"), newNotif);
 
-            io.to(assignee).emit("receiveNotification", newNotif);
+            const receiverSocket = onlineUsers.get(assignee);
+
+            if (receiverSocket) {
+                getIO().to(receiverSocket).emit("receiveNotification", newNotif);
+            }
         }
 
         return res.status(201).json({ id: docRef.id, ...newTask });
@@ -88,8 +92,11 @@ const assignTask = async (req, res) => {
 
         await addDoc(collection(db, "notifications"), newNotif);
 
-        io.to(assignee).emit("receiveNotification", newNotif);
+        const receiverSocket = onlineUsers.get(assignee);
 
+        if (receiverSocket) {
+            getIO().to(receiverSocket).emit("receiveNotification", newNotif);
+        }
         return res.status(200).json({ message: "Giao task thành công" });
     } catch (error) {
         console.error("Lỗi khi giao task:", error);

@@ -1,10 +1,10 @@
 import { Layout, Menu } from 'antd';
 import { useState } from 'react';
 import HeaderBar from '../../Components/HeaderBar/HeaderBar';
+import TaskCalendar from './Calendar/TaskCalendar';
 import './Dashboard.css';
 import EmployeeTable from './EmployeeTable/EmployeeTable';
 import MessagePanel from './MessagePanel/MessagePanel';
-import TaskManager from './TaskManager/TaskManager';
 
 const { Sider, Content } = Layout;
 
@@ -24,7 +24,7 @@ export default function Dashboard() {
                 return (
                     <>
                         <h1 className="page-title">Manage Task</h1>
-                        <TaskManager role='owner' />
+                        <TaskCalendar role='owner' />
                     </>
                 );
             case '3':

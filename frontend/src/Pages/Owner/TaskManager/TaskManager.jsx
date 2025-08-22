@@ -27,11 +27,6 @@ const TaskManager = ({ role }) => {
     const [assignedUsers, setAssignedUsers] = useState({});
     const [employeeList, setEmployeeList] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [refresh, setRefresh] = useState("");
-
-    const handleChange = (key) => {
-        setRefresh(key);
-    }
 
     const handleCreateTask = async (values) => {
         setLoading(true);
@@ -150,7 +145,6 @@ const TaskManager = ({ role }) => {
         return task.status === activeTab;
     });
 
-    console.log("Filtered Tasks:", refresh);
     return (
         <div className="task-manager" style={{ padding: "24px" }}>
             <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
@@ -173,7 +167,6 @@ const TaskManager = ({ role }) => {
                     onCancel={() => setIsModalOpen(false)}
                     loading={loading}
                     employeeList={employeeList}
-                    handleDataChange={handleChange}
                 />
             )}
 

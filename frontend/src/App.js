@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import enums from './constant/enum';
+import useSocket from './Hooks/useSocket';
 import AccountSetup from './Pages/AccountSetup/AccountSetup';
 import Home from './Pages/Employee/Home';
 import Dashboard from './Pages/Owner/Dashboard';
@@ -7,9 +10,11 @@ import PhoneVerification from './Pages/SignIn/PhoneVerification';
 import SignIn from './Pages/SignIn/SignIn';
 import ProtectedRoute from './ProtectedRoute';
 import './Styles/theme.css';
-import enums from './constant/enum';
 
 function App() {
+  const user = useSelector((state) => state.auth.user);
+
+  const socket = useSocket(user?._id);
   return (
     <div className="App">
       <Routes>
