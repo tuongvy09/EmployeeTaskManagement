@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, deleteDoc, addDoc, serverTimestamp } = require("firebase/firestore");
+const { doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, deleteDoc, addDoc, serverTimestamp, Timestamp } = require("firebase/firestore");
 const { db } = require("../config/firebase.js");
 const { onlineUsers, getIO } = require("../config/socket.js");
 
@@ -14,12 +14,12 @@ const createTask = async (req, res) => {
         const newTask = {
             title,
             description: description || "",
-            dueDate,
+            dueDate: Timestamp.fromDate(new Date(dueDate)),
             assignee: assignee || null,
             assigneeName: assignee ? (await getDoc(doc(db, "employees", assignee))).data().name : null,
             status: assignee ? "doing" : "unassigned",
             reminderSent: false,
-            createdAt: new Date().toISOString(),
+            createdAt: serverTimestamp(),
         };
 
         const docRef = await addDoc(collection(db, "tasks"), newTask);
@@ -105,11 +105,22 @@ const assignTask = async (req, res) => {
 };
 
 const getTasks = async (req, res) => {
-    const { status } = req.query;
+    const { status, startDate, endDate } = req.query;
 
     try {
         const taskRef = collection(db, "tasks");
-        const q = status ? query(taskRef, where("status", "==", status)) : taskRef;
+        let conditions = [];
+
+        if (status && status !== "all") {
+            conditions.push(where("status", "==", status));
+        }
+
+        if (startDate && endDate) {
+            conditions.push(where("dueDate", ">=", new Date(startDate)));
+            conditions.push(where("dueDate", "<=", new Date(endDate)));
+        }
+
+        const q = conditions.length > 0 ? query(taskRef, ...conditions) : taskRef;
 
         const snapshot = await getDocs(q);
 
@@ -120,10 +131,15 @@ const getTasks = async (req, res) => {
 
         return res.status(200).json({ success: true, tasks });
     } catch (error) {
-        console.error("Lỗi khi lấy danh sách task:", error);
-        return res.status(500).json({ success: false, message: "Lỗi khi lấy task", error: error.message });
+        console.error("❌ Lỗi khi lấy danh sách task:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy task",
+            error: error.message,
+        });
     }
 };
+
 
 const completeTask = async (req, res) => {
     const { id } = req.params;
