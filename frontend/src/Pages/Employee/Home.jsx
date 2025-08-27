@@ -1,9 +1,9 @@
 import { Layout, Menu } from 'antd';
 import { useState } from 'react';
 import HeaderBar from '../../Components/HeaderBar/HeaderBar';
+import TaskCalendar from '../Owner/Calendar/TaskCalendar';
 import '../Owner/Dashboard.css';
 import MessagePanel from '../Owner/MessagePanel/MessagePanel';
-import TaskManager from '../Owner/TaskManager/TaskManager';
 import UserInfo from './UserInfo/UserInfo';
 
 const { Sider, Content } = Layout;
@@ -17,7 +17,7 @@ export default function Home() {
                 return (
                     <>
                         <h1 className="page-title">My Tasks</h1>
-                        <TaskManager role="employee" />
+                        <TaskCalendar role="employee" />
                     </>
                 );
             case '2':

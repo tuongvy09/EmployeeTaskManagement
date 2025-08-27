@@ -91,12 +91,11 @@ export const createTask = (taskData) => {
     return api.post('/createTask', taskData);
 }
 
-export const getTasks = (status) => {
+export const getTasks = (status, startDate, endDate) => {
     return api.get('/getTasks', {
-        params: { status }
+        params: { status, startDate, endDate }
     });
 };
-
 export const assignTask = (taskId, employeeId) => {
     return api.put(`/${taskId}/assign`, { assignee: employeeId });
 };
@@ -114,9 +113,9 @@ export const getConversationMessages = (conversationId) => {
     return api.get(`/conversation/${conversationId}`);
 };
 
-export const getTasksAssignedToEmployee = (employeeId, status) => {
+export const getTasksAssignedToEmployee = (employeeId, status, startDate, endDate) => {
     return api.get(`/employee/assigned/${employeeId}`, {
-        params: { status }
+        params: { status, startDate, endDate }
     });
 };
 
