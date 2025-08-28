@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 
 const ownerRoutes = require("./routes/OwnerRoute");
 const employeeRoutes = require("./routes/EmployeeRoute");
+const commentRoutes = require("./routes/commentRoutes");
 const notificationRoutes = require("./routes/NotificationRoutes");
 const { initSocket } = require("./config/socket");
 
@@ -21,6 +22,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.use("/api", ownerRoutes);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/comments", commentRoutes);
 
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
