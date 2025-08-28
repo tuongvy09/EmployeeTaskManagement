@@ -1,8 +1,9 @@
 import { ClockCircleOutlined, InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Divider, Drawer, Select, Space, Tag, Typography } from "antd";
+import { Button, Card, Divider, Drawer, Select, Space, Tag, Typography } from "antd";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { assignTask, completeTask } from "../../../Contexts/api";
+import TaskComments from "./TaskComments";
 
 const { Title, Text } = Typography;
 
@@ -58,87 +59,85 @@ const TaskPanel = ({ open, onClose, task, role, employeeList, onRefresh }) => {
 
     return (
         <Drawer
-            title={<Title level={4}>Chi tiết</Title>}
+            title={<Title level={4} style={{ margin: 0 }}>{task.title}</Title>}
             placement="right"
             onClose={onClose}
             open={open}
-            width={500}
-            bodyStyle={{ padding: 24 }}
+            width={900}
+            bodyStyle={{ padding: 20, overflowY: "auto" }}
         >
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-                <Space direction="vertical" size={2}>
-                    <Text strong>Tiêu đề:</Text>
-                    <Text>{task.title}</Text>
-                </Space>
-                <Divider />
+            <Space direction="vertical" size="large" style={{ width: "100%" }}>
 
-                <Space direction="vertical" size={2}>
-                    <Text strong>Mô tả:</Text>
-                    <Text>{task.description || "Chưa có mô tả"}</Text>
-                </Space>
-                <Divider />
-
-                <Space direction="horizontal" size="small" align="center">
-                    <ClockCircleOutlined />
-                    <Text strong>Deadline:</Text>
-                    <Text>{formatDate(task.dueDate)}</Text>
-                </Space>
-                <Divider />
-
-                <Space direction="horizontal" size="small" align="center">
-                    <UserOutlined />
-                    <Text strong>Người phụ trách:</Text>
-                    <Text>{task.assigneeName || "Chưa có"}</Text>
-                </Space>
-                <Divider />
-
-                <Space direction="vertical" size={4} style={{ width: "100%" }}>
-                    <Space direction="horizontal" size="small" align="center">
-                        <InfoCircleOutlined />
-                        <Text strong>Trạng thái:</Text>
-                        <Tag color={statusColor[task.status] || "blue"}>{task.status}</Tag>
+                {/* Metadata */}
+                <Space size="large" wrap style={{ fontSize: 13 }}>
+                    <Space>
+                        <ClockCircleOutlined />
+                        <Text type="secondary">Deadline:</Text>
+                        <Text>{formatDate(task.dueDate)}</Text>
                     </Space>
 
-                    {role === "owner" && task.status === "unassigned" && (
-                        <div style={{ width: "100%" }}>
-                            <Select
-                                placeholder="Chọn người giao task"
-                                style={{ width: "100%", marginBottom: 8 }}
-                                value={assignedUsers[task.id]}
-                                onChange={(val) =>
-                                    setAssignedUsers({ ...assignedUsers, [task.id]: val })
-                                }
-                            >
-                                {employeeList.map((emp) => (
-                                    <Select.Option key={emp.id} value={emp.id}>
-                                        {emp.name}
-                                    </Select.Option>
-                                ))}
-                            </Select>
+                    <Space>
+                        <UserOutlined />
+                        <Text type="secondary">Phụ trách:</Text>
+                        <Text>{task.assigneeName || "Chưa có"}</Text>
+                    </Space>
 
-                            <Button
-                                block
-                                type="primary"
-                                disabled={!assignedUsers[task.id]}
-                                onClick={() => handleAssignTask(task.id)}
-                                loading={loading}
-                            >
-                                Giao task
-                            </Button>
-                        </div>
-                    )}
+                    <Space>
+                        <InfoCircleOutlined />
+                        <Text type="secondary">Trạng thái:</Text>
+                        <Tag color={statusColor[task.status] || "blue"}>{task.status}</Tag>
+                    </Space>
+                </Space>
 
-                    {role === "employee" && task.status === "doing" && (
+                {/* Mô tả */}
+                <div>
+                    <Text strong>Mô tả</Text>
+                    <Divider style={{ margin: "6px 0" }} />
+                    <Text>{task.description || "Chưa có mô tả"}</Text>
+                </div>
+
+                {/* Action */}
+                {(role === "owner" && task.status === "unassigned") && (
+                    <Space direction="vertical" style={{ width: "100%" }}>
+                        <Select
+                            placeholder="Chọn người giao task"
+                            style={{ width: "100%" }}
+                            value={assignedUsers[task.id]}
+                            onChange={(val) => setAssignedUsers({ ...assignedUsers, [task.id]: val })}
+                        >
+                            {employeeList.map((emp) => (
+                                <Select.Option key={emp.id} value={emp.id}>
+                                    {emp.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
                         <Button
-                            block
                             type="primary"
-                            onClick={() => handleCompleteTask(task.id)}
+                            block
+                            disabled={!assignedUsers[task.id]}
+                            onClick={() => handleAssignTask(task.id)}
                             loading={loading}
                         >
-                            Hoàn thành task
+                            Giao task
                         </Button>
-                    )}
-                </Space>
+                    </Space>
+                )}
+
+                {(role === "employee" && task.status === "doing") && (
+                    <Button
+                        type="primary"
+                        block
+                        onClick={() => handleCompleteTask(task.id)}
+                        loading={loading}
+                    >
+                        Hoàn thành task
+                    </Button>
+                )}
+
+                {/* Comment */}
+                <Card size="small" title="Bình luận" bordered={false} style={{ background: "#fafafa" }}>
+                    <TaskComments taskId={task.id} />
+                </Card>
             </Space>
         </Drawer>
     );

@@ -146,3 +146,11 @@ export const getUnreadNotificationsCount = (userId) => {
 export const markAllNotificationsAsReadApi = (userId) => {
     return api.put(`/notifications/read/${userId}`);
 };
+
+export const createCommentApi = (commentData) => {
+    return api.post("/comments", commentData);
+};
+
+export const getCommentsByTaskId = (taskId) => {
+    return api.get(`/comments/${taskId}`);
+};
