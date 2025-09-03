@@ -154,3 +154,23 @@ export const createCommentApi = (commentData) => {
 export const getCommentsByTaskId = (taskId) => {
     return api.get(`/comments/${taskId}`);
 };
+
+export const getSummaryTask = () => {
+    return api.get(`/dashboard/summary`);
+};
+
+export const getUpcomingTasks = () => {
+    return api.get(`/dashboard/upcoming`);
+}
+
+export const getOverdueTasks = () => {
+    return api.get(`/dashboard/overdue`);
+};
+
+export const getCompletionRates = () => {
+    return api.get(`/dashboard/completion-rates`);
+};
+
+export const getContributions = () => {
+    return api.get(`/dashboard/contributions`);
+};
