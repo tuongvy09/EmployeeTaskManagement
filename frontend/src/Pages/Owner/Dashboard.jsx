@@ -3,6 +3,7 @@ import { useState } from 'react';
 import HeaderBar from '../../Components/HeaderBar/HeaderBar';
 import TaskCalendar from './Calendar/TaskCalendar';
 import './Dashboard.css';
+import DashboardLayout from './Dashboard/DashboardLayout';
 import EmployeeTable from './EmployeeTable/EmployeeTable';
 import MessagePanel from './MessagePanel/MessagePanel';
 
@@ -34,6 +35,13 @@ export default function Dashboard() {
                         <MessagePanel role='owner' />
                     </>
                 );
+            case '4':
+                return (
+                    <>
+                        <h1 className="page-title">Dashboard</h1>
+                        <DashboardLayout />
+                    </>
+                );
             default:
                 return null;
         }
@@ -62,6 +70,8 @@ export default function Dashboard() {
                     <Menu.Item key="1">Manage Employee</Menu.Item>
                     <Menu.Item key="2">Manage Task</Menu.Item>
                     <Menu.Item key="3">Message</Menu.Item>
+                    <Menu.Item key="4">Dashboard</Menu.Item>
+
                 </Menu>
             </Sider>
             <Layout>
